@@ -3,15 +3,13 @@
 //  Contacts
 //
 //  Created by Eriko Nagano on 2020/05/29.
-//  Copyright © 2020 Eriko Nagano. All rights reserved.
+//  Copyright © 2020 Eriko Kawaguchi. All rights reserved.
 //
 
 #ifndef manage_data_h
 #define manage_data_h
 
 #include <stdio.h>
-
-#endif /* manage_data_h */
 
 #define NUMBER  10  /* 登録数 */
 #define LENGTH  16  /* 文字数 */
@@ -24,3 +22,4 @@ typedef struct {
     char memo[LENGTH];  /* メモ */
 } list;
 
+#endif /* manage_data_h */
