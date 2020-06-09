@@ -2,55 +2,58 @@
 //  manage_data.c
 //  Contacts
 //
-//  Created by Eriko Nagano on 2020/05/29.
+//  Created by Eriko Kawaguchi on 2020/05/29.
 //  Copyright © 2020 Eriko Kawaguchi. All rights reserved.
 //
 
-#include "manage_data.h"
 #include <string.h>
+#include "manage_data.h"
 
-// done:グローバル変数に記憶用の変数を宣言
-static list S_record[D_NUMBER];
+static S_DATA g_list[D_NUMBER];
 
-// done:本変数を更新するための関数を定義
 /* 追加 */
-void addContact(list S_person){
+int addData(S_DATA S_person){
     int i;
     for (i = 0; i < D_NUMBER; i++) {
-        if (S_record[i].index != 0) {
-                break;
+        if (g_list[i].index == 0) {
+            g_list[i].index = i + 1;
+            strcpy(g_list[i].name, S_person.name);
+            strcpy(g_list[i].mail, S_person.mail);
+            strcpy(g_list[i].memo, S_person.memo);
+            return 0;
         }
-        S_record[i].index = i + 1;
-        // done:入力用リストから挿入
-        strcpy(S_record[i].name, S_person.name);
-        strcpy(S_record[i].mail, S_person.mail);
-        strcpy(S_record[i].memo, S_person.memo);
     }
-    return;
+    return 1;
 }
 
 /* 表示 */
-// todo:ポインタで受け取ること
-void checkContacts(list S_person[D_NUMBER]){
+int getData(int size, S_DATA* data){
     int i;
-    for (i = 0; i < D_NUMBER ; i++) {
-        S_person[i].index = S_record[i].index;
-        strcpy(S_person[i].name, S_record[i].name);
-        strcpy(S_person[i].mail, S_record[i].mail);
-        strcpy(S_person[i].memo, S_record[i].memo);
+    int f = 1;
+    for (i = 0; i < size ; i++) {
+        (data + i)->index = g_list[i].index;
+        strcpy((data + i)->name, g_list[i].name);
+        strcpy((data + i)->mail, g_list[i].mail);
+        strcpy((data + i)->memo, g_list[i].memo);
+        f = 0;
     }
-    return;
+    if (f == 0) {
+        return 0;
+    } else {
+        return 1;
+    }
 }
 
 /* 削除 */
-void delContact(int input){
+int deleteData(int index){
     int i;
-    input = input - 1;
-    for (i = 0; i == input; i++) {
-        S_record[input].index = 0;
-        strcpy(S_record[input].name, "");
-        strcpy(S_record[input].mail, "");
-        strcpy(S_record[input].memo, "");
+    index = index - 1;
+    for (i = 0; i == index; i++) {
+        g_list[index].index = 0;
+        strcpy(g_list[index].name, "");
+        strcpy(g_list[index].mail, "");
+        strcpy(g_list[index].memo, "");
+        return 0;
     }
-    return;
+    return 1;
 }
