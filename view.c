@@ -9,6 +9,8 @@
 #include <stdio.h>
 #include "manage_data.h"
 
+static E_SAVE g_dest = SAVE_STATIC;   /* 保存先 */
+
 /* メニュー表示 */
 static int viewMenu(){
     int input = 0;  /* 選択肢 */
@@ -17,7 +19,11 @@ static int viewMenu(){
     printf("1.ADD\n");
     printf("2.VIEW\n");
     printf("3.DELETE\n");
-    printf("4.END\n");
+    printf("4.MANAGE STATIC\n");
+    printf("5.MANAGE HEAP\n");
+    printf("6.MANAGE FILE\n");
+    printf("7.MANAGE DB\n");
+    printf("8.END\n");
     printf("====================\n");
     scanf("%d", &input);
     
@@ -26,17 +32,17 @@ static int viewMenu(){
 
 /* 追加 */
 static void checkAddData(){
-    S_DATA S_person;    /* 入力用リスト */
+    S_DATA person;    /* 入力用リスト */
     
-    S_person.index = 0;
+    person.index = 0;
     printf("\nPlease enter your name:");
-    scanf("%16s", S_person.name);
+    scanf("%16s", person.name);
     printf("Please enter your mail address:");
-    scanf("%16s", S_person.mail);
+    scanf("%16s", person.mail);
     printf("Please enter memo:");
-    scanf("%16s", S_person.memo);
-
-    if (addData(S_person) != 0) {
+    scanf("%16s", person.memo);
+    
+    if (addData(g_dest, person) != 0) {
         printf("Can't add data");
     };
     return;
@@ -45,13 +51,14 @@ static void checkAddData(){
 /* 表示 */
 static void viewContats(){
     S_DATA data[D_NUMBER];
+    int size = D_NUMBER;
     int i;
-
-    if (getData(D_NUMBER, data) != 0) {
+    
+    if (getData(g_dest, data) != 0) {
         printf("Can't get data");
         return;
     };
-    for (i = 0; i < D_NUMBER; i++) {
+    for (i = 0; i < size; i++) {
         if (0 < data[i].index) {
             printf("\n%-2d", data[i].index);
             printf("\t%-16s", data[i].name);
@@ -72,7 +79,7 @@ static void checkDelData(){
         printf("\nThere is no data to delete.");
         return;
     }
-    if (deleteData(input) != 0) {
+    if (deleteData(g_dest, input) != 0) {
         printf("Can't delete data");
     };
     return;
@@ -93,11 +100,25 @@ int main(void){
                 checkDelData(); /* 削除 */
                 break;
             case 4:
+                g_dest = SAVE_STATIC;
+                break;          /* STATIC */
+            case 5:
+                g_dest = SAVE_HEAP;
+                if (secureMemory() != 0) {
+                    printf("can't secure memory");
+                };
+                break;         /* HEAP */
+            case 6:
+//                g_dest = SAVE_FILE;
+            case 7:
+//                g_dest = SAVE_DB;
+                break;          /* DB */
+            case 8:
                 break;       /* 終了 */
             default:
-                printf("Please enter a number within the range 1-4.\n");
+                printf("Please enter a number within the range 1-8.\n");
         }
-        if (input == 4) {
+        if (input == 8) {
             return 0;
         }
     }

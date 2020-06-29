@@ -9,8 +9,14 @@
 #ifndef manage_data_h
 #define manage_data_h
 
-#define D_NUMBER  10  /* 登録数 */
-#define D_LENGTH  16  /* 文字数 */
+#define D_NUMBER (10)      /* 登録数 */
+#define D_LENGTH (16 + 1)  /* 文字数 */
+#define D_SUCCESS (0)
+#define D_NO_CAPACITY (1)
+#define D_NULL_CHECK (2)
+#define D_ERROR_SIZE (3)
+#define D_ERROR_MALLOC (4)
+#define D_NO_DATA (5)
 
 typedef struct {
     int index;          /* インデックス */
@@ -19,8 +25,16 @@ typedef struct {
     char memo[D_LENGTH];  /* メモ */
 } S_DATA;
 
-extern int addData(S_DATA data);
-extern int getData(int size, S_DATA* data);
-extern int deleteData(int index);
+typedef enum {
+    SAVE_STATIC,
+    SAVE_HEAP,
+    SAVE_FILE,
+    SAVE_DB
+} E_SAVE;
+
+extern int addData(E_SAVE dest, S_DATA data);
+extern int getData(E_SAVE dest, S_DATA* data);
+extern int deleteData(E_SAVE dest, int index);
+extern int secureMemory(void);
 
 #endif /* manage_data_h */
