@@ -32,9 +32,10 @@ typedef enum {
     SAVE_DB
 } E_SAVE;
 
+extern int initData(void);
 extern int addData(E_SAVE dest, S_DATA data);
 extern int getData(E_SAVE dest, S_DATA* data);
 extern int deleteData(E_SAVE dest, int index);
-extern int secureMemory(void);
+extern int checkMemory(void);
 
 #endif /* manage_data_h */

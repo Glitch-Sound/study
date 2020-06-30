@@ -86,6 +86,11 @@ static void checkDelData(){
 }
 
 int main(void){
+    if (initData() != 0) {
+        printf("Failed to initialize");
+        return 1;
+    }
+    
     while (1){
         int input = 0;
         input = viewMenu();     /* メニュー表示 */
@@ -104,9 +109,6 @@ int main(void){
                 break;          /* STATIC */
             case 5:
                 g_dest = SAVE_HEAP;
-                if (secureMemory() != 0) {
-                    printf("can't secure memory");
-                };
                 break;         /* HEAP */
             case 6:
 //                g_dest = SAVE_FILE;

@@ -12,7 +12,20 @@
 
 static S_DATA g_list[D_NUMBER];
 static S_DATA* g_p_record = NULL;
-static int g_count = 0;
+static int g_count_heap = 0;
+//static int g_count_reg = 0;
+
+/* 初期化 */
+int initData(){
+    int i;
+    for (i = 0; i < D_NUMBER; i++) {
+        g_list[i].index = 0;
+        strcpy(g_list[i].name, "");
+        strcpy(g_list[i].mail, "");
+        strcpy(g_list[i].memo, "");
+    }
+    return D_SUCCESS;
+}
 
 /* 追加 */
 int addData(E_SAVE dest, S_DATA person){
@@ -23,8 +36,12 @@ int addData(E_SAVE dest, S_DATA person){
     
     switch (dest) {
         case SAVE_HEAP:
-            size = g_count;
+            if (checkMemory() != 0) {
+                return D_ERROR_MALLOC;
+            }
+            size = g_count_heap;
             data = g_p_record;
+//            g_count_reg++;
             break;
         default:
             data = g_list;
@@ -57,7 +74,7 @@ int getData(E_SAVE dest, S_DATA* viewdata){
     switch (dest) {
         case SAVE_HEAP:
             data = g_p_record;
-            size = g_count;
+            size = g_count_heap;
             break;
             
         default:
@@ -100,24 +117,28 @@ int deleteData(E_SAVE dest, int index){
 }
 
 /* 動的メモリ確保 */
-int secureMemory(){
+int checkMemory(){
     int ret = D_SUCCESS;
-    S_DATA* p_tmp = NULL;
+//    S_DATA* p_tmp = NULL;
 
-    if (g_p_record == NULL) {
-        // g_p_recordがnull 10件分の領域を確保、件数更新
+    if (g_count_heap == 0) {
         g_p_record = malloc(sizeof(S_DATA) * D_NUMBER);
-        g_count = D_NUMBER;
-    } else {
-        // g_countが10件→20件分の領域を確保、件数更新
-        p_tmp = realloc(g_p_record, sizeof(S_DATA) * (D_NUMBER * 2));
-        g_count = D_NUMBER * 2;
-        g_p_record = p_tmp;
-    }
-    if (!g_p_record) {
-        ret = D_ERROR_MALLOC;
+        if (g_p_record == NULL) {
+            free(g_p_record);
+            ret = D_ERROR_MALLOC;
+        } else {
+        memset(g_p_record, 0, (sizeof(S_DATA) * D_NUMBER));
+        g_count_heap = D_NUMBER;
+        }
+//    } else if (g_count_reg == D_NUMBER) {
+//        p_tmp = realloc(g_p_record, sizeof(S_DATA) * (D_NUMBER * 2));
+//        if (p_tmp == NULL) {
+//            free(p_tmp);
+//            ret = D_ERROR_MALLOC;
+//        } else {
+//            g_p_record = p_tmp;
+//            g_count_heap = D_NUMBER * 2;
+//        }
     }
     return ret;
 }
-
-
